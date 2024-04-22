@@ -108,12 +108,12 @@ class FrameHandler: NSObject, ObservableObject {
                 print("This is the hand pose observation: \(handPoseObservation)")
                 do {
                     let keypointsMultiArray = try handPoseObservation.keypointsMultiArray()
-                    print("This is the hand pose prediction: \(keypointsMultiArray)")
+                    //print("This is the hand pose prediction: \(keypointsMultiArray)")
                     let finalPrediction = try model.prediction(poses: keypointsMultiArray)
-                    print("This is the final prediction: \(finalPrediction.label)")
+                   print("This is the final prediction: \(finalPrediction.label)")
+                    let confidence = finalPrediction.labelProbabilities[finalPrediction.label]!
+                    print("This is the confidence levels: \(confidence)")
                     return finalPrediction.label
-                    // let confidence = finalPrediction.labelProbabilities[finalPrediction.label]!
-                    // print("This is the confidence levels: \(confidence)")
 
                 } catch {
                     print("Error converting hand pose observation to a key points multi array: \(error.localizedDescription)")
@@ -159,7 +159,7 @@ class FrameHandler: NSObject, ObservableObject {
     }
 }
 
-extension FrameHandler: AVCaptureVideoDataOutputSampleBufferDelegate {
+/*extension FrameHandler: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let cgImage = imageFromSampleBuffer(sampleBuffer: sampleBuffer) else { return }
           
@@ -168,6 +168,25 @@ extension FrameHandler: AVCaptureVideoDataOutputSampleBufferDelegate {
           DispatchQueue.main.async { [unowned self] in
               self.frame = cgImage
           }
+    }
+    
+    private func imageFromSampleBuffer(sampleBuffer: CMSampleBuffer) -> CGImage? {
+        guard let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return nil }
+        let ciImage = CIImage(cvPixelBuffer: imageBuffer)
+        guard let cgImage = context.createCGImage(ciImage, from: ciImage.extent) else { return nil }
+        return cgImage
+    }
+}*/
+
+extension FrameHandler: AVCaptureVideoDataOutputSampleBufferDelegate {
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        guard let cgImage = imageFromSampleBuffer(sampleBuffer: sampleBuffer) else { return }
+          
+        performHandPoseDetection(on: cgImage)
+          
+        DispatchQueue.main.async { [self] in
+            self.frame = cgImage
+        }
     }
     
     private func imageFromSampleBuffer(sampleBuffer: CMSampleBuffer) -> CGImage? {

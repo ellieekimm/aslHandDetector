@@ -37,9 +37,8 @@ struct DemoView: View {
                                 }
                                 
                             }
-                                .padding(.leading, 10)
-                    .padding(.leading, 30)
-                    .padding(.bottom, 20)
+                    .padding(.leading, 20)
+                    .padding(.bottom, 15)
                 HStack {
                     Spacer()
                     VStack {
@@ -75,7 +74,9 @@ struct DemoView: View {
                             .padding(.bottom, 10)
                             .foregroundColor(Color.white)
                             .fontWeight(.semibold)
-                        .font(.system(size: 20))})
+                            .font(.system(size: 20))
+                    })
+                    
                     .buttonStyle(PlainButtonStyle())
                     Spacer()
 

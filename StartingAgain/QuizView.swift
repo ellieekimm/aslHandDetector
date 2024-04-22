@@ -22,33 +22,31 @@ struct QuizView: View {
 
         VStack(alignment: .leading) {
             HStack {
-                            Image("new-leaf")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 18, height: 18)
-                                .padding(15)
-                                .background(
-                                    Circle()
-                                        .foregroundColor(Color.mainGreen)
-                                )
-                            if lesson.name == "Basic Letters" {
-                                Text("NEW LETTER!")
-                                    .font(.callout)
-                                    .foregroundColor(Color.black)
-                            }
-                            else {
-                                Text("NEW NUMBER!")
-                                    .font(.callout)
-                                    .foregroundColor(Color.black)
-                            }
-                            
-                        }
-                            .padding(.leading, 10)
-                            .padding(.bottom, 20)
+                Image("new-leaf")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 18, height: 18)
+                    .padding(8)
+                    .background(
+                        Circle()
+                            .foregroundColor(Color.mainGreen)
+                    )
+                if lesson.name == "Basic Letters" {
+                    Text("NEW LETTER!")
+                        .font(.callout)
+                        .foregroundColor(Color.black)
+                }
+                else {
+                    Text("NEW NUMBER!")
+                        .font(.callout)
+                        .foregroundColor(Color.black)
+                }
+            }
+                            .padding(.leading, 5)
+                            .padding(.bottom, 15)
             HStack {
                 Text("Which one of these is \(lesson.toStudy[lesson.currentIndex].label)?")
-                    .font(.system(size: 30))
-                    .bold()
+                    .font(.system(size: 25))
                     .padding(.leading, 10)
                 Spacer()
             }
@@ -115,13 +113,13 @@ struct QuizView: View {
                     HStack(spacing: 15)
                     { // Horizontal stack for first row (A and B)
                         Button(action: {
-                            self.selectLetter("C")
+                            self.selectLetter("c")
                             if (selectedLetter == lesson.toStudy[lesson.currentIndex].label){
                                 isNextButtonEnabled = true
                             }
                         }) {
                             LetterCardView(imageName: "C")
-                                .background(selectedLetter == lesson.toStudy[lesson.currentIndex].label && lesson.toStudy[lesson.currentIndex].label == "C" ? Color.mainGreen : Color.clear)
+                                .background(selectedLetter == lesson.toStudy[lesson.currentIndex].label && lesson.toStudy[lesson.currentIndex].label == "c" ? Color.mainGreen : Color.clear)
                         }
                         .buttonStyle(PlainButtonStyle())
                         
@@ -151,13 +149,13 @@ struct QuizView: View {
                         .buttonStyle(PlainButtonStyle())
                         
                         Button(action: {
-                            self.selectLetter("A")
+                            self.selectLetter("a")
                             if (selectedLetter == lesson.toStudy[lesson.currentIndex].label){
                                 isNextButtonEnabled = true
                             }
                         }) {
                             LetterCardView(imageName: "A")
-                                .background(selectedLetter == lesson.toStudy[lesson.currentIndex].label && lesson.toStudy[lesson.currentIndex].label == "A" ? Color.mainGreen : Color.clear)
+                                .background(selectedLetter == lesson.toStudy[lesson.currentIndex].label && lesson.toStudy[lesson.currentIndex].label == "a" ? Color.mainGreen : Color.clear)
                         }
                         .buttonStyle(PlainButtonStyle())
                     }
@@ -174,14 +172,15 @@ struct QuizView: View {
                             HStack {
                                 Spacer()
                                 Text("Next")
-                                    .padding([.leading, .trailing], 160)
+                                    .padding([.leading, .trailing], 145)
                                     .padding([.top, .bottom], 15)
-                                    .background(Color.leafgreen)
-                                    .cornerRadius(10)
+                                    .background(Color.mainGreen)
+                                    .cornerRadius(20)
                                     .padding(.bottom, 10)
-                                    .foregroundColor(.black)
+                                    .foregroundColor(Color.white)
                                     .fontWeight(.semibold)
                                     .font(.system(size: 20))
+                                    .frame(width: 350)
                                 Spacer()
                             }
                         })
@@ -191,14 +190,16 @@ struct QuizView: View {
                             Spacer()
                             Button(action: {}, label: {
                                 Text("Keep Trying")
-                                    .padding([.leading, .trailing], 130)
+                                    .padding([.leading, .trailing], 115)
                                     .padding([.top, .bottom], 15)
                                     .background(Color.gray)
-                                    .cornerRadius(10)
+                                    .cornerRadius(20)
                                     .padding(.bottom, 10)
-                                    .foregroundColor(.black)
+                                    .foregroundColor(Color.white)
                                     .fontWeight(.semibold)
                                     .font(.system(size: 20))
+                                    .frame(width: 350)
+
                             })
                             .buttonStyle(PlainButtonStyle())
                             Spacer()
@@ -207,6 +208,7 @@ struct QuizView: View {
                 }
                 
             }
+        .padding()
 
     }
 

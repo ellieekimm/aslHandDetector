@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -18,14 +19,16 @@ struct HomeView: View {
                         .resizable()
                         .scaledToFit()
                     Text("SignSprouts")
-                        .font(.custom("WendyOne-Regular", size: 45))
+                        .font(Font.custom("WendyOne-Regular", size: 45))
                         .fontWeight(.bold)
                         .padding(.bottom, 10)
                     Text("Bridging gaps, one gesture at a time!")
                         .fontWeight(.regular)
                         .font(.system(size: 20))
                     Spacer()
-                    NavigationLink(destination: LoadingView()) {
+                    NavigationLink(destination: LoadingView()
+                        .navigationBarBackButtonHidden(true)
+                    ) {
                         Text("Get Started")
                             .padding([.leading, .trailing], 120)
                             .padding([.top, .bottom], 15)

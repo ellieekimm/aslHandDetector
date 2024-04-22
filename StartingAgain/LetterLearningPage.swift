@@ -13,25 +13,15 @@ struct LetterLearningPage: View {
 
     @StateObject private var model = FrameHandler()
     @Binding var lesson: Lesson
-    @State private var isCorrect: Bool = true
+    @State private var isCorrect: Bool = false
     @Binding var gameState: GameState
+    @State private var player: AVAudioPlayer?
+    @State var soundPlayedOnce: Bool = false
     
-    var player: AVAudioPlayer!
-    
-    mutating func getSound() {
-        do {
-            if let path = Bundle.main.path(forResource: "success-1-6297", ofType: "mp3") {
-                let url = URL(fileURLWithPath: path)
-                player = try AVAudioPlayer(contentsOf: url)
-            }
-        } catch {
-            print("Error loading sound file: \(error.localizedDescription)")
-        }
-    }
-
 
     var body: some View {
-            VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 10) {
+            VStack {
                 PracticeWidget()
                 Text("Try recreating \(lesson.toStudy[lesson.currentIndex].label) below!")
                     .foregroundColor(Color.black)
@@ -41,41 +31,42 @@ struct LetterLearningPage: View {
                     CameraView(correct: $lesson.toStudy[lesson.currentIndex].label) { isCorrect in
                         if isCorrect {
                             self.isCorrect = true
-                            player?.play()
                         }
                     }
+                    
                     Spacer()
                 }
                 .padding()
-                
-                
-                if isCorrect == true {
-                    if lesson.currentIndex < 2 {
-                        Button(action: {
-                            lesson.increaseCurrentIndex()
-                            gameState = GameState.demoView
-                        }, label: {
+            }
+
+            if isCorrect == true {
+                if lesson.currentIndex < 2 {
+                    Button(action: {
+                        lesson.increaseCurrentIndex()
+                        gameState = GameState.demoView
+                    }, label: {
+                        HStack {
+                            Spacer()
                             Text("Great! Next letter!")
-                                .padding([.leading, .trailing], 40)
+                                .padding([.leading, .trailing], 80)
                                 .padding([.top, .bottom], 15)
                                 .background(Color.mainGreen)
                                 .cornerRadius(20)
                                 .padding(.bottom, 10)
                                 .foregroundColor(Color.white)
                                 .fontWeight(.semibold)
-                            .font(.system(size: 20))
-                        })
-                        .buttonStyle(PlainButtonStyle())
-                    }
-                    else if lesson.currentIndex == 2{
-                        Button(action: {
-                            gameState = GameState.finishedView
-                            if let lessonLengthString = calculateLessonLength(startTime: lesson.startTime) {
-                                lesson.lessonLength = stringFromTimeInterval(lessonLengthString)
-                            } else {
-                                print("Lesson start time is not set.")
-                            }
-                        }, label: {
+                                .font(.system(size: 20))
+                            Spacer()
+                        }
+                    })
+                    .buttonStyle(PlainButtonStyle())
+                } else if lesson.currentIndex == 2 {
+                    Button(action: {
+                        gameState = GameState.finishedView
+                        lesson.endTime = Date()
+                    }, label: {
+                        HStack {
+                            Spacer()
                             Text("Finish Lesson!")
                                 .padding([.leading, .trailing], 100)
                                 .padding([.top, .bottom], 15)
@@ -84,53 +75,48 @@ struct LetterLearningPage: View {
                                 .padding(.bottom, 10)
                                 .foregroundColor(Color.white)
                                 .fontWeight(.semibold)
-                            .font(.system(size: 20))
-                        })
-                        .buttonStyle(PlainButtonStyle())
-                    }
+                                .font(.system(size: 20))
+                            Spacer()
+                        }
+                    })
+                    .buttonStyle(PlainButtonStyle())
                 }
-                else {
-                    HStack {
-                        Spacer()
-                        Text("Keep trying!")
-                            .padding([.leading, .trailing], 100)
-                            .padding([.top, .bottom], 15)
-                            .background(Color.gray)
-                            .cornerRadius(20)
-                            .padding(.bottom, 10)
-                            .foregroundColor(Color.white)
-                            .fontWeight(.semibold)
-                            .font(.system(size: 20))
-                        Spacer()
-                    }
-                    
+            } else {
+                HStack {
+                    Spacer()
+                    Text("Keep trying!")
+                        .padding([.leading, .trailing], 100)
+                        .padding([.top, .bottom], 15)
+                        .background(Color.gray)
+                        .cornerRadius(20)
+                        .padding(.bottom, 10)
+                        .foregroundColor(Color.white)
+                        .fontWeight(.semibold)
+                        .font(.system(size: 20))
+                    Spacer()
                 }
+
+            }
 
         }
         .padding()
 
+
+
     }
     
-    func calculateLessonLength(startTime: String) -> TimeInterval? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "HH:mm:ss"
-
-        guard let startTimeDate = dateFormatter.date(from: startTime) else {
-            return nil // Return nil if the start time couldn't be parsed
+    func playSuccessSound() {
+        guard let url = Bundle.main.url(forResource: "success-1-6297", withExtension: "wav") else {
+            print("Sound file not found")
+            return
         }
 
-        let now = Date()
-        let lessonLength = now.timeIntervalSince(startTimeDate)
-        return lessonLength
-    }
-
-
-    func stringFromTimeInterval(_ interval: TimeInterval) -> String {
-        let ti = NSInteger(interval)
-        let seconds = ti % 60
-        let minutes = (ti / 60) % 60
-        let hours = (ti / 3600)
-        return String(format: "%0.2d:%0.2d:%0.2d", hours, minutes, seconds)
+        do {
+            player = try AVAudioPlayer(contentsOf: url)
+            player?.play()
+        } catch {
+            print("Error playing sound: \(error)")
+        }
     }
 }
 

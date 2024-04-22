@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct LessonOverviewView: View {
+    
+    
     @Binding var lessonNumbers: Lesson
     @Binding var lessonAlphabet: Lesson
     @Binding var gameState: GameState
@@ -44,5 +46,3 @@ struct LessonOverviewView: View {
         selectedLesson = lesson
     }
 }
-
-
